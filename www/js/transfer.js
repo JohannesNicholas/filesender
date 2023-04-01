@@ -414,6 +414,8 @@ window.filesender.transfer = function() {
 
         if (typeof filesender.config.valid_filename_regex == 'string') {
             var regexstr = filesender.config.valid_filename_regex;
+		// Do something to only run this in Node.js and not in a browser
+            const XRegExp = require('xregexp');
             var r = XRegExp(regexstr,'g');
             var testResult = r.test(file.name);
             var lastIndex = r.lastIndex;
@@ -1045,6 +1047,13 @@ window.filesender.transfer = function() {
         if(this.roundtriptoken)
             args.roundtriptoken = this.roundtriptoken;
         
+        filesender.ui.log("So I should add things to the authenticated endpoint now");
+        console.log(args);
+        if(this.api_key) {
+            filesender.ui.log("APIkey - cannot do it here we do NOT- visible so add things to resource + sign the output");
+        }
+
+
         var q = [];
         for(var k in args) q.push(k + '=' + args[k]);
         
@@ -1149,6 +1158,7 @@ window.filesender.transfer = function() {
      * Start upload
      */
     this.start = function(errorhandler) {
+		console.log(filesender);
         if (!errorhandler)
             errorhandler = filesender.ui.error;
         
@@ -1213,8 +1223,16 @@ window.filesender.transfer = function() {
             this.encryption_client_entropy = window.filesender.crypto_app().generateClientEntropy();
         }
         
+        filesender.ui.log('Creating transfer - attempt 1');
+
         var transfer = this;
+//        console.log("What's the data look like?");
+  //      console.log(data);
+        console.log("What's the transfer look like?");
+    	console.log(transfer);
+        	filesender.ui.log('Creating transfer - attempt start...');
         filesender.client.postTransfer(this, function(path, data) {
+        	console.log('Creating transfer - attempt 2...');
             transfer.id = data.id;
             transfer.encryption_salt = data.salt;
             transfer.roundtriptoken  = data.roundtriptoken;
