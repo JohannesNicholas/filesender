@@ -4,9 +4,21 @@ const XRegExp = require('xregexp');import { Blob } from 'buffer';
 
 const http = require('https'); //used to download the config file
 const fs = require('fs'); //used to save the config file
+const ini = require('ini') //used to parse the config file
 
-//Base url of the filesender instance we are connecting to
-let base_url = 'https://cloudstor.aarnet.edu.au/sender'
+//get the users home directory
+const home = process.env.HOME || process.env.USERPROFILE;
+
+//Get the API key and security token from ~/.filesender/filesender.py.ini
+const user_config_file = fs.readFileSync(home + '/.filesender/filesender.py.ini', 'utf8');
+const user_config = ini.parse(user_config_file);
+const base_url = user_config['system']['base_url'];
+const default_transfer_days_valid = user_config['system']['default_transfer_days_valid'];
+const username = user_config['user']['username'];
+const apikey = user_config['user']['apikey'];
+
+
+
 
 const { JSDOM } = require( "jsdom" );
 const { window } = new JSDOM( "", {url: base_url + "/?s=upload"} );
@@ -59,8 +71,8 @@ const request = http.get(base_url+"/filesender-config.js.php", function(response
         
         //create a new transfer
         var transfer = new global.window.filesender.transfer()
-        transfer.from = "your@email.com";
-        global.window.filesender.client.api_key = 'API KEY GOES HERE';
+        transfer.from = username;
+        global.window.filesender.client.api_key = apikey;
 
         //add a file to the transfer
         const blob = new Blob(['This file was generated as a test.']);
@@ -71,7 +83,7 @@ const request = http.get(base_url+"/filesender-config.js.php", function(response
 
         //set the recipient
         //transfer.addRecipient('someone@example.com', undefined);
-        transfer.addRecipient('someone@example.com', undefined);
+        transfer.addRecipient(username, undefined); //transfer to yourself
     
         //set the expiry date for 7 days in the future
         let expiry = (new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
