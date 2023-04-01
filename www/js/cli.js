@@ -59,8 +59,8 @@ const request = http.get(base_url+"/filesender-config.js.php", function(response
         
         //create a new transfer
         var transfer = new global.window.filesender.transfer()
-        transfer.from = "johannes.nicholas@utas.edu.au";
-        global.window.filesender.client.api_key = 'd3b86ee78594ff349b4b0fc1c8e76ec56e6769e990d3833cadf314e81d57d6c3';
+        transfer.from = "your@email.com";
+        global.window.filesender.client.api_key = 'API KEY GOES HERE';
 
         //add a file to the transfer
         const blob = new Blob(['This file was generated as a test.']);
@@ -71,7 +71,7 @@ const request = http.get(base_url+"/filesender-config.js.php", function(response
 
         //set the recipient
         //transfer.addRecipient('someone@example.com', undefined);
-        transfer.addRecipient('joey@joeyn.dev', undefined);
+        transfer.addRecipient('someone@example.com', undefined);
     
         //set the expiry date for 7 days in the future
         let expiry = (new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
@@ -79,7 +79,7 @@ const request = http.get(base_url+"/filesender-config.js.php", function(response
         transfer.expires = expiry.toISOString().split('T')[0];
 
         //set the security token
-       // global.window.filesender.client.security_token = "6159a5677c7a5fd8b2437eac2eafdb3cbf57173ca90ee1bf760b253b70af3ffd";
+       // global.window.filesender.client.security_token = "TOKEN GOES HERE";
         global.window.filesender.client.authentication_required = true;
 
         //what do I need to do before starting the transfer to make it work?
