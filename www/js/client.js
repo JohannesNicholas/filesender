@@ -101,18 +101,129 @@ window.filesender.client = {
         
         if(!options) options = {};
         
+
+
         var args = {};
         if(options.args) for(var k in options.args) args[k] = options.args[k];
         var urlargs = [];
         for(var k in args) urlargs.push(k + '=' + args[k]);
+
+        filesender.ui.log('Brook: What is the method');
+        console.log(method);
+        filesender.ui.log('Brook: What is the path');
+        console.log(resource);
+        filesender.ui.log('Brook: What are the args');
+        console.log(urlargs);
+        filesender.ui.log('Brook: What are the options');
+        console.log(options);
+        filesender.ui.log('Brook: What are the resource');
+        console.log(resource);
+        filesender.ui.log('Brook: What is the API key');
+        console.log(this.api_key);
+        filesender.ui.log('Brook: What is the DATA key');
+        console.log(data);
+
+        function flatten(obj, parent, res = {}){
+            for(let key in obj){
+                let propName = parent ? parent + '[' + key + ']' : key;
+                if(typeof obj[key] == 'object'){
+                    flatten(obj[key], propName, res);
+                } else {
+                    res[propName] = obj[key];
+                }
+            }
+            return res;
+        }
+
+
+        if (this.api_key) {
+            //... if there is an API key then REST CLI
+            var from = data.from;
+            var timestamp = Math.floor(Date.now() / 1000);
+
+            //var flat_data = flatten(data);
+            //var to_sign = bytes(method.toLowerCase()+'&'+base_url.replace('https://','',1).replace('http://','',1)+path+'?'+('&'.join(flat_data)), 'ascii')
+            //var to_sign = bytes(method.toLowerCase()+'&'+base_url.replace('https://','',1).replace('http://','',1)+path+'?'+('&'.join(flat_data)), 'ascii')
+            var to_sign = method.toLowerCase()+'&'+this.base_path.replace('https://','',1).replace('http://','',1)+resource+'?remote_user='+data.from+'&timestamp='+timestamp;
+            
+
+            /*
+            var content_type = (options && ('Content-Type' in options)) ? options['Content-Type'] : "application/json";
+                    to_sign += '&'+data;
+            if (data && 'application/json' == content_type) {
+                // some how different without casting to ascii?!?
+                to_sign += '&'+data;
+            } else {
+
+            }
+             */
+
+            console.log("The AUTH path is: "+to_sign+" does it have a / before transfer?");
+
+            //data['signature'] = hmac.new(bkey, signed, hashlib.sha1).hexdigest();
+
+            //add flattened data to to_sign
+            //var flattened_data = flatten(data);
+            //filesender.ui.log("This is the new FLATTENED data");
+            //console.log(JSON.stringify(flattened_data));
+
+            //console.log(flattened_data.join('&'));
+
+            //clean up the data
+            data.aup_checked = 1;
+            delete data.encryption;
+            delete data.encryption_key_version;
+            delete data.encryption_key_version;
+            delete data.encryption_password_encoding;
+            delete data.encryption_password_version;
+            delete data.encryption_password_hash_iterations;
+            delete data.encryption_client_entropy;
+            delete data.options;
+            delete data.subject;
+            delete data.message;
+            
+            //{"from":"brook.schofield@gmail.com","encryption":0,"encryption_key_version":0,"encryption_password_encoding":"none","encryption_password_version":1,"encryption_password_hash_iterations":"4096000","encryption_client_entropy":"","files":[{"name":"test.txt","size":34,"mime_type":"","cid":"file_1680238734037_8_34_427367","aead":""},{"name":"test2.txt","size":34,"mime_type":"","cid":"file_1680238734037_9_34_926171","aead":""}],"recipients":["brook.schofield@gmail.com"],"subject":null,"message":null,"lang":null,"expires":"2023-04-07","aup_checked":false,"options":{}}
+
+
+            if(data) {
+                var raw = options && ('rawdata' in options) && options.rawdata;
+                
+                if(!raw) data = JSON.stringify(data);
+
+                to_sign += '&'+data;
+                
+            }else data = undefined;
+
+
+
+            //hmac of to_sign content
+            const crypto = require('crypto');
+            //TODO: get the ALGORITHM from config/REST rather than default to "sha1"
+            let signature = crypto.createHmac("sha1", this.api_key).update(to_sign).digest().toString('hex');
+
+            // add the signature to the URL args
+            //data['signature'] = signature;
+            urlargs.push('remote_user' + '=' + from);
+            urlargs.push('signature' + '=' + signature);
+            urlargs.push('timestamp' + '=' + timestamp);
+
+            console.log("The AUTH path is: "+to_sign+" does it have a / before transfer?");
+
+        } else {
+            if(data) {
+                var raw = options && ('rawdata' in options) && options.rawdata;
+                
+                if(!raw) data = JSON.stringify(data);
+            }else data = undefined;
+        }
+        
+        console.log("Pre PATH: "+resource);
         
         if(urlargs.length) resource += (resource.match(/\?/) ? '&' : '?') + urlargs.join('&');
-        
-        if(data) {
-            var raw = options && ('rawdata' in options) && options.rawdata;
-            
-            if(!raw) data = JSON.stringify(data);
-        }else data = undefined;
+
+        console.log("Post PATH: "+resource);
+
+
         
         var errorhandler = function(error) {
             filesender.ui.error(error);
@@ -127,10 +238,10 @@ window.filesender.client = {
         
         if(this.security_token /*&& (method != 'get')**/) headers['X-Filesender-Security-Token'] = this.security_token;
 
-	if (method.toLowerCase() === 'delete' || method.toLowerCase() === 'put') {
-	    // attach the token in request header
-   	    headers['csrfptoken'] = filesender.client.getCSRFToken();
-	}
+        if (method.toLowerCase() === 'delete' || method.toLowerCase() === 'put') {
+            // attach the token in request header
+            headers['csrfptoken'] = filesender.client.getCSRFToken();
+        }
         
         var settings = {
             cache: false,
@@ -152,6 +263,9 @@ window.filesender.client = {
             type: method.toUpperCase(),
             url: this.base_path + resource
         };
+
+        console.log("settings comlpeted ");
+        console.log(settings.data);
         
         // Needs to be done after "var settings" because handler needs that settings variable exists
         settings.error = function(xhr, status, error) {
@@ -171,13 +285,17 @@ window.filesender.client = {
                 if(
                     (error.message == 'rest_authentication_required' || error.message == 'rest_xsrf_token_did_not_match') &&
                     (options.ignore_authentication_required || filesender.client.authentication_required)
-                )
+                ) {
+			console.log("client.js: this far - but authentication failing.");
                     return;
+		}
                 
                 if(
                     (error.message == 'rest_authentication_required' || error.message == 'rest_xsrf_token_did_not_match') &&
                     (options.auth_prompt === undefined || options.auth_prompt)
                 ) {
+                    console.log("Brook: this far part 2");
+                    console.log(options);
                     filesender.client.authentication_required = filesender.ui.popup(
                         lang.tr('authentication_required'),
                         filesender.config.logon_url ? {
