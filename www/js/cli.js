@@ -12,7 +12,7 @@ const home = process.env.HOME || process.env.USERPROFILE;
 //Get the API key and security token from ~/.filesender/filesender.py.ini
 const user_config_file = fs.readFileSync(home + '/.filesender/filesender.py.ini', 'utf8');
 const user_config = ini.parse(user_config_file);
-const base_url = user_config['system']['base_url'];
+const base_url = user_config['system']['base_url'].split('/').slice(0, -1).join('/');
 const default_transfer_days_valid = user_config['system']['default_transfer_days_valid'];
 const username = user_config['user']['username'];
 const apikey = user_config['user']['apikey'];
