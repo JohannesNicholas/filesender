@@ -108,20 +108,20 @@ window.filesender.client = {
         var urlargs = [];
         for(var k in args) urlargs.push(k + '=' + args[k]);
 
-        filesender.ui.log('Brook: What is the method');
-        console.log(method);
-        filesender.ui.log('Brook: What is the path');
-        console.log(resource);
-        filesender.ui.log('Brook: What are the args');
-        console.log(urlargs);
-        filesender.ui.log('Brook: What are the options');
-        console.log(options);
-        filesender.ui.log('Brook: What are the resource');
-        console.log(resource);
-        filesender.ui.log('Brook: What is the API key');
-        console.log(this.api_key);
-        filesender.ui.log('Brook: What is the DATA key');
-        console.log(data);
+        // filesender.ui.log('Brook: What is the method');
+        // console.log(method);
+        // filesender.ui.log('Brook: What is the path');
+        // console.log(resource);
+        // filesender.ui.log('Brook: What are the args');
+        // console.log(urlargs);
+        // filesender.ui.log('Brook: What are the options');
+        // console.log(options);
+        // filesender.ui.log('Brook: What are the resource');
+        // console.log(resource);
+        // filesender.ui.log('Brook: What is the API key');
+        // console.log(this.api_key);
+        // filesender.ui.log('Brook: What is the DATA key');
+        // console.log(data);
 
         function flatten(obj, parent, res = {}){
             for(let key in obj){

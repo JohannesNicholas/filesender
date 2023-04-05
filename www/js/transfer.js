@@ -1226,10 +1226,6 @@ window.filesender.transfer = function() {
         filesender.ui.log('Creating transfer - attempt 1');
 
         var transfer = this;
-//        console.log("What's the data look like?");
-  //      console.log(data);
-        console.log("What's the transfer look like?");
-    	console.log(transfer);
         	filesender.ui.log('Creating transfer - attempt start...');
         filesender.client.postTransfer(this, function(path, data) {
         	console.log('Creating transfer - attempt 2...');
