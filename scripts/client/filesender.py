@@ -206,6 +206,11 @@ def flatten(d, parent_key=''):
   return items
 
 def call(method, path, data, content=None, rawContent=None, options={}, tryCount=0):
+  # print out the request
+  if debug:
+    print("Request: ")
+    print(method, path, data, content, rawContent, options, tryCount)
+
   initData = {}
   for k in data:
     initData[k] = data[k]
@@ -225,10 +230,13 @@ def call(method, path, data, content=None, rawContent=None, options={}, tryCount
     signed += bytes('&', 'ascii')
     signed += inputcontent
 
+  print("Signed: ", signed)
+
   #print(signed)
   bkey = bytearray()
   bkey.extend(map(ord, apikey))
   data['signature'] = hmac.new(bkey, signed, hashlib.sha1).hexdigest()
+ 
 
   url = base_url+path+'?'+('&'.join(flatten(data)))
   headers = {
@@ -295,6 +303,16 @@ def call(method, path, data, content=None, rawContent=None, options={}, tryCount
   return r
 
 def postTransfer(user_id, files, recipients, subject=None, message=None, expires=None, options=[]):
+  # log out all the parameters
+  if debug:
+    print('user_id: '+user_id)
+    print('files: ',files)
+    print('recipients: '+recipients)
+    print('subject: '+str(subject))
+    print('message: '+str(message))
+    print('expires: '+str(expires))
+    print('options: '+str(options))
+
 
   if expires is None:
     expires = round(time.time()) + (default_transfer_days_valid*24*3600)

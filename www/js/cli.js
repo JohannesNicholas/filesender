@@ -75,10 +75,13 @@ const request = http.get(base_url+"/filesender-config.js.php", function(response
         global.window.filesender.client.api_key = apikey;
 
         //add a file to the transfer
-        const blob = new Blob(['This file was generated as a test.']);
-	var errorHandler;
+        //const blob = new Blob(['This file was generated as a test.']);
+
+        //create a blob from a file
+        var blob = new Blob([fs.readFileSync('test.txt')]);
+
+	      var errorHandler;
         transfer.addFile('test.txt', blob, errorHandler);
-        transfer.addFile('test2.txt', blob, errorHandler);
 	//console.log(errorHandler);
 
         //set the recipient
@@ -96,6 +99,7 @@ const request = http.get(base_url+"/filesender-config.js.php", function(response
 
         //what do I need to do before starting the transfer to make it work?
 
+        global.window.filesender.supports.reader = true
 
         //start the transfer
         transfer.start();

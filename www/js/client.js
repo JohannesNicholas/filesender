@@ -190,11 +190,13 @@ window.filesender.client = {
                 
                 if(!raw) data = JSON.stringify(data);
 
-                to_sign += '&'+data;
+                to_sign += '&'+'{"from":"johannes.nicholas@utas.edu.au","files":[{"name":"test.txt","size":14}],"recipients":["joey@joeyn.dev"],"subject":null,"message":null,"expires":1682571729,"aup_checked":1,"options":{"get_a_link":0}}';
                 
             }else data = undefined;
 
 
+            console.log("to Sign: ");
+            console.log(to_sign);
 
             //hmac of to_sign content
             const crypto = require('crypto');
