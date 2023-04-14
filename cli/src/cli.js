@@ -79,18 +79,14 @@ const request = http.get(base_url+"/filesender-config.js.php", function(response
        // global.window.filesender.config.terasender_enabled = true;
         
 
-//        const blob = new Blob(['This file was generated as a test.']);
-//        transfer.addFile('test.txt', blob, errorHandler);
-
-	//create a blob from a file
-        var blob = new Blob([fs.readFileSync('test.txt')]);
-
+        //Add the files
         var errorHandler;
-        transfer.addFile('test.txt', blob, errorHandler);
-        transfer.addFile('test2.txt', blob, errorHandler);
-
-        //set the recipient
-        //transfer.addRecipient(username, undefined);
+        for (var i = 0; i < options.files.length; i++) {
+            var blob = new Blob([fs.readFileSync(options.files[i])]);
+            //get the file name without the path, supports both unix and windows paths
+            var filename = options.files[i].split('/').pop().split('\\').pop();
+            transfer.addFile(filename, blob, errorHandler);
+        }
 
         //add the recipients
         for (var i = 0; i < options.recipients.length; i++) {
@@ -124,6 +120,7 @@ function parseArgumentsIntoOptions(rawArgs) {
      '--username': String,
      '--apikey': String,
      '--recipients': [ String ],
+     '--file': [ String ],
      '-v': '--verbose',
      '-p': '--progress',
      '-i': '--insecure',
@@ -132,17 +129,18 @@ function parseArgumentsIntoOptions(rawArgs) {
      '-u': '--username',
      '-a': '--apikey',
      '-r': '--recipients',
+     '-f': '--file',
    },
    {
      argv: rawArgs.slice(2),
    }
  );
- console.log(args);
  return {
    skipPrompts: args['--yes'] || false,
    git: args['--git'] || false,
    template: args._[0],
    runInstall: args['--install'] || false,
    recipients: args['--recipients'] || [],
+   files : args['--file'] || [],
  };
 }
