@@ -8,15 +8,11 @@ If you want to add your FileSender installation to this list, send an email to f
 
 ## HE&R Community installations - Europe & Middle-East
 
-| Country/Region|NREN/Org  | Service URL          | Known since|
-| --- | --- | --- |---|
-| Armenia  | ASNET-AM  | [https://filesender.asnet.am/filesender/](https://filesender.asnet.am/filesender/)  | Feb 2016|
-| Austria  | ACOnet  | [https://filesender.aco.net/](https://filesender.aco.net/)      | Nov 2012|
-| Austria  | Institute for Advanced Studies  | [https://filesender.ihs.ac.at](https://filesender.ihs.ac.at)  | Jan 2014|
-| Belgium  | BELNET  | [https://filesender.belnet.be/](https://filesender.belnet.be/)      | Mar 2010|
-| Catalonia  | i2CAT    | [https://filesender.i2cat.net](https://filesender.i2cat.net)      | Apr 2011|
-| Croatia  | SRCE    | [https://filesender.srce.hr/](https://filesender.srce.hr/)      | Oct 2010|
-| Cyprus  | CYNET    | [https://filesender.ucy.ac.cy](https://filesender.ucy.ac.cy)      | Nov 2012|
+| Country/Region|NREN/Org  | Service URL          | Known since| Last checked |
+| --- | --- | --- |---|---|
+| Austria  | ACOnet  | [https://filesender.aco.net/](https://filesender.aco.net/)      | Nov 2012| March 2023 |
+| Belgium  | BELNET  | [https://filesender.belnet.be/](https://filesender.belnet.be/)      | Mar 2010| March 2023 |
+| Croatia  | SRCE    | [https://filesender.srce.hr/](https://filesender.srce.hr/)      | Oct 2010| March 2023 |
 | Cyprus | Frederick University | [https://transfer.frederick.ac.cy](https://transfer.frederick.ac.cy) | Sep 2021|
 | Czech Republic| CESNET  | [https://filesender.cesnet.cz](https://filesender.cesnet.cz)      | Feb 2012|
 | Denmark  | DeiC    | [https://filesender.deic.dk](https://filesender.deic.dk)      | Mar 2012|
@@ -80,6 +76,8 @@ If you want to add your FileSender installation to this list, send an email to f
 | South Africa  | SANReN  | [https://filesender.sanren.ac.za/filesender/](https://filesender.sanren.ac.za/filesender/)  | Apr 2014|
 | Uganda | RENU | [https://filesender.renu.ac.ug/](https://filesender.renu.ac.ug/) | Mar 2018|
 
+## HE&R Community installations
+| Austria  | Institute for Advanced Studies  | [https://filesender.ihs.ac.at](https://filesender.ihs.ac.at)  | Jan 2014| March 2023 |
 
 
 ## Other
@@ -89,4 +87,11 @@ If you want to add your FileSender installation to this list, send an email to f
 | Australia | BARNET - Legal sector ISP | [https://filesender.barnet.com.au/](https://filesender.barnet.com.au/) | March 2018 |
 | Netherlands  | Pleio - Dutch government | [https://bestandendelen.pleio.nl/filesender](https://bestandendelen.pleio.nl/filesender) | Oct 2013|
 | Philippines  | Government  | [https://pakete.gov.ph](https://pakete.gov.ph)       | Jul 2013|
+
+## Unreachable installations
+| Armenia  | ASNET-AM  | [https://filesender.asnet.am/filesender/](https://filesender.asnet.am/filesender/)  | Feb 2016| March 2023 |
+| Catalonia  | i2CAT    | [https://filesender.i2cat.net](https://filesender.i2cat.net)      | Apr 2011| March 2023 |
+| Cyprus  | CYNET    | [https://filesender.ucy.ac.cy](https://filesender.ucy.ac.cy)      | Nov 2012| March 2023 |
+
+## Verified decommissioned installations
 

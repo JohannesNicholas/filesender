@@ -414,6 +414,10 @@ window.filesender.transfer = function() {
 
         if (typeof filesender.config.valid_filename_regex == 'string') {
             var regexstr = filesender.config.valid_filename_regex;
+
+            // Do something to only run this in Node.js and not in a browser
+            const XRegExp = require('../lib/xregexp/xregexp-all.js');
+
             var r = XRegExp(regexstr,'g');
             var testResult = r.test(file.name);
             var lastIndex = r.lastIndex;

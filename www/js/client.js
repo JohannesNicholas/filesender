@@ -87,12 +87,16 @@ window.filesender.client = {
     },
     
     // Send a request to the webservice
-    call: function(method, resource, data, callback, options) {
+    // Changed this to an ASYNC to return data for REST interface
+    // this might NOT be the best way to do this.
+    call: async function(method, resource, data, callback, options) {
+        try {
         if(!this.base_path) {
             var path = window.location.href;
             path = path.split('/');
             path.pop();
             path = path.join('/');
+            //TODO: make REST endpoint a variable
             this.base_path = path + '/rest.php';
         }
         
@@ -105,14 +109,74 @@ window.filesender.client = {
         if(options.args) for(var k in options.args) args[k] = options.args[k];
         var urlargs = [];
         for(var k in args) urlargs.push(k + '=' + args[k]);
+
+        // API Key based authentication (i.e. CLI)
+        if (this.api_key) {
+            //... if there is an API key then REST CLI
+            var timestamp = Math.floor(Date.now() / 1000);
+
+            urlargs.push('remote_user' + '=' + this.from);
+            urlargs.push('timestamp' + '=' + timestamp);
+
+            var local_resource = resource.split(/\?|\&/);
+            resource = local_resource.shift();
+
+            local_resource.forEach(v => urlargs.push(v));
+
+            urlargs.sort();
+            var to_sign = method.toLowerCase()
+                        +'&'
+                        +this.base_path.replace('https://','',1).replace('http://','',1)
+                        +resource
+                        +'?'
+                        +urlargs.join('&');
+
+            if(data) {
+                var raw = options && ('rawdata' in options) && options.rawdata;
+                
+                if(!raw) {
+                    //clean up the data
+                    data.aup_checked = 1;
+
+                    //Delete all `null` & `undefined` values (== operator vs ===)
+                    Object.keys(data).forEach((key) => data[key] == null && delete data[key]);
+                    data = JSON.stringify(data);
+                    to_sign += '&' + data;
+                } else {
+                    // Await the return value - because outer function is now ASYNC
+                    let buf = await data.arrayBuffer();
+                    data = new Uint8Array(buf);
+
+                    let enc = new TextEncoder();
+                    to_sign += '&';
+                    let to_sign_ab = enc.encode(to_sign);
+
+                    let mergedArray = new Uint8Array(to_sign_ab.length + data.length);
+                    mergedArray.set(to_sign_ab);
+                    mergedArray.set(data, to_sign_ab.length);
+
+                    to_sign = mergedArray;
+                }
+            }else data = undefined;
+
+            //hmac of to_sign content
+            const crypto = require('crypto');
+            //TODO: get the ALGORITHM from config/REST rather than default to "sha1"
+            let signature = crypto.createHmac("sha1", this.api_key).update(to_sign).digest().toString('hex');
+
+            // add the signature to the URL args
+            urlargs.push('signature' + '=' + signature);
+
+        } else {
+
+            if(data) {
+                var raw = options && ('rawdata' in options) && options.rawdata;
+                
+                if(!raw) data = JSON.stringify(data);
+            }else data = undefined;
+        }
         
         if(urlargs.length) resource += (resource.match(/\?/) ? '&' : '?') + urlargs.join('&');
-        
-        if(data) {
-            var raw = options && ('rawdata' in options) && options.rawdata;
-            
-            if(!raw) data = JSON.stringify(data);
-        }else data = undefined;
         
         var errorhandler = function(error) {
             filesender.ui.error(error);
@@ -277,6 +341,11 @@ window.filesender.client = {
         }
         
         return jQuery.ajax(settings);
+
+    } catch (e) {
+        console.log("This happened at the end of async call function: "+e);
+        throw(e);
+    }
     },
     
     get: function(resource, callback, options) {
