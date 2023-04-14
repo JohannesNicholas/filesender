@@ -90,7 +90,12 @@ const request = http.get(base_url+"/filesender-config.js.php", function(response
         transfer.addFile('test2.txt', blob, errorHandler);
 
         //set the recipient
-        transfer.addRecipient(username, undefined);
+        //transfer.addRecipient(username, undefined);
+
+        //add the recipients
+        for (var i = 0; i < options.recipients.length; i++) {
+            transfer.addRecipient(options.recipients[i], undefined);
+        }
     
         //set the expiry date for 7 days in the future
         let expiry = (new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
@@ -111,14 +116,14 @@ const request = http.get(base_url+"/filesender-config.js.php", function(response
 function parseArgumentsIntoOptions(rawArgs) {
  const args = arg(
    {
-     '-v': Boolean,
-     '-i': Boolean,
-     '-p': Boolean,
-     '-s': String,
-     '-m': String,
-     '-u': String,
-     '-a': String,
-     '-r': [ String ],
+     '--verbose': Boolean,
+     '--insecure': Boolean,
+     '--progress': Boolean,
+     '--subject': String,
+     '--message': String,
+     '--username': String,
+     '--apikey': String,
+     '--recipients': [ String ],
      '-v': '--verbose',
      '-p': '--progress',
      '-i': '--insecure',
@@ -132,12 +137,12 @@ function parseArgumentsIntoOptions(rawArgs) {
      argv: rawArgs.slice(2),
    }
  );
+ console.log(args);
  return {
    skipPrompts: args['--yes'] || false,
    git: args['--git'] || false,
    template: args._[0],
    runInstall: args['--install'] || false,
+   recipients: args['--recipients'] || [],
  };
 }
-
-
