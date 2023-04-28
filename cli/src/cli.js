@@ -94,16 +94,28 @@ const request = http.get(base_url+"/filesender-config.js.php", function(response
         global.window.location = {}
         global.window.location.href = base_url + "/?s=upload";
         
+
+	      //Turn on reader support for API transfers
+        global.window.filesender.client.from = username;
+        global.window.filesender.client.remote_user = username;
+        global.window.filesender.supports.reader = true;
+	      global.window.filesender.client.api_key = apikey;
+
+        //lists all the transfers
+        global.window.filesender.client.getTransfer("@me", null, null, null).then(function(transfers) {
+          console.log(transfers.length + " transfers found");
+          return;
+        });
+        return;
+                
+                
         
         //create a new transfer
         var transfer = new global.window.filesender.transfer()
-        global.window.filesender.client.from = username;
-        global.window.filesender.client.remote_user = username;
         transfer.from = username;
+        
 
-	      //Turn on reader support for API transfers
-        global.window.filesender.supports.reader = true;
-	      global.window.filesender.client.api_key = apikey;
+
 
         // global.window.filesender.config.terasender_enabled = true;
         
